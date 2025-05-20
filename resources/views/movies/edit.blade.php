@@ -98,22 +98,43 @@
                 </div>
 
                 <!-- Gambar Cover -->
-                <div class="mb-3 row">
+                 <div class="mb-3 row">
                     <label for="cover_image" class="col-sm-2 col-form-label">Gambar Cover</label>
                     <div class="col-sm-10">
                         @if($movie->cover_image)
-                            <p>
-                                <img src="{{ asset('storage/' . $movie->cover_image) }}" alt="Cover" width="150">
-                            </p>
+                        <p>
+                            @php
+                            $cover = $movie->cover_image;
+                            // Cek apakah cover_image adalah URL atau path lokal
+                            $isUrl = filter_var($cover, FILTER_VALIDATE_URL);
+                            @endphp
+
+                            @if($isUrl)
+                            <img src="{{ $cover }}" alt="Cover" width="150">
+                            @else
+                            <img src="{{ asset('storage/' . $cover) }}" alt="Cover" width="150">
+                            @endif
+                        </p>
                         @endif
-                        <input type="file" name="cover_image" class="form-control @error('cover_image') is-invalid @enderror" id="cover_image">
+
+                        <p class="text-muted mb-1">Upload Gambar (opsional jika pakai link)</p>
+                        <input type="file" name="cover_image" class="form-control mb-2 @error('cover_image') is-invalid @enderror" id="cover_image">
                         @error('cover_image')
+                        <div class="invalid-feedback">
+                            {{ $message }}
+                        </div>
+                        @enderror
+
+                        <p class="text-muted mt-2 mb-1">Atau masukkan link gambar</p>
+                        <input type="url" name="cover_image_url" class="form-control @error('cover_image_url') is-invalid @enderror" placeholder="https://example.com/image.jpg" value="{{ old('cover_image_url') }}">
+                            @error('cover_image_url')
                             <div class="invalid-feedback">
                                 {{ $message }}
                             </div>
-                        @enderror
+                            @enderror
+                        </div>
                     </div>
-                </div>
+
 
                 <!-- Submit Button -->
                 <div class="d-flex justify-content-end">

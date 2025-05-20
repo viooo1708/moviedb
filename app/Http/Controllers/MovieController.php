@@ -48,14 +48,19 @@ class MovieController extends Controller
             'category_id' => 'required|exists:categories,id', // ← ini wajib!
             'year' => 'required|integer',
             'actors' => 'nullable|string',
-            'cover_image' => 'nullable|image',
+            'cover_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'cover_image_url' => 'nullable|url',
         ]);
 
 
         if ($request->hasFile('cover_image')) {
             $validated['cover_image'] = $request->file('cover_image')->store('cover_images', 'public');
+        } elseif ($request->filled('cover_image_url')) {
+            $validated['cover_image'] = $request->input('cover_image_url');
         }
 
+        // Jangan simpan key cover_image_url ke DB karena kolomnya cuma cover_image
+        unset($validated['cover_image_url']);
         Movie::create($validated);
 
         session()->flash('success', 'Film berhasil ditambahkan.');
@@ -87,7 +92,6 @@ class MovieController extends Controller
     public function update(Request $request, string $id)
     {
         $movie = Movie::findOrFail($id);
-
         $validated = $request->validate([
             'title' => 'required|max:255|unique:movies,title,' . $id,
             'slug' => 'nullable|max:255|unique:movies,slug,' . $id,
@@ -96,21 +100,38 @@ class MovieController extends Controller
             'year' => 'required|integer',
             'actors' => 'nullable|string',
             'cover_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'cover_image_url' => 'nullable|url',
         ]);
 
+        // Proses cover image
         if ($request->hasFile('cover_image')) {
-            // Hapus gambar lama jika ada
-            if ($movie->cover_image) {
-                \Storage::delete('public/' . $movie->cover_image);
+            // Hapus gambar lama jika ada dan bukan URL
+            if ($movie->cover_image && !filter_var($movie->cover_image, FILTER_VALIDATE_URL)) {
+                Storage::delete('public/' . $movie->cover_image);
             }
             $validated['cover_image'] = $request->file('cover_image')->store('cover_images', 'public');
+        } elseif ($request->filled('cover_image_url')) {
+            // Hapus gambar lama jika ada dan bukan URL
+            if ($movie->cover_image && !filter_var($movie->cover_image, FILTER_VALIDATE_URL)) {
+                Storage::delete('public/' . $movie->cover_image);
+            }
+            // Gunakan URL gambar sebagai cover_image
+            $validated['cover_image'] = $request->input('cover_image_url');
+        } else {
+            // Jika tidak upload file dan tidak isi URL,
+            // jangan ubah kolom cover_image, hapus dari validated supaya tidak overwrite dengan null
+            unset($validated['cover_image']);
         }
+
+        // Hapus key cover_image_url dari validated agar tidak error
+        unset($validated['cover_image_url']);
 
         $movie->update($validated);
 
         session()->flash('success', 'Film berhasil diperbarui.');
         return redirect()->route('movies.index');
     }
+
 
     /**
      * Remove the specified resource from storage.
