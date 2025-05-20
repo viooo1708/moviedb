@@ -4,17 +4,16 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MovieController;
 use App\Http\Controllers\CategoryController;
 
-// Route untuk tampilan welcome
-Route::get('/', function () {
-    return view('welcome');
-});
+// // Route untuk tampilan welcome
+// Route::get('/', function () {
+//     return view('welcome');
+// });
 
-// Route untuk tampilan home
-Route::get('/home', function () {
-    return view('home');
-});
+// Route untuk halaman home (menampilkan daftar film)
+Route::get('/', [MovieController::class, 'home'])->name('home');
+// Route::get('/', [MovieController::class, 'homepage']);
 
-// Resource route untuk CategoryController
+
+// Resource routes
 Route::resource('categories', CategoryController::class);
 Route::resource('movies', MovieController::class);
-

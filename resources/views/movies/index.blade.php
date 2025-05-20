@@ -41,7 +41,7 @@
                         <td>{{ $movie->year }}</td>
                         <td>{{ $movie->actors }}</td>
                         <td>
-                            <img src="{{ $movie->cover_image }}" alt="{{ $movie->title }}" width="100" class="img-fluid">
+                            <img src="{{ filter_var($movie->cover_image, FILTER_VALIDATE_URL) ? $movie->cover_image : asset('storage/' . $movie->cover_image) }}" alt="{{ $movie->title }}" width="100" class="img-fluid">
                         </td>
                         <td>
                             <div class="btn-group" role="group" aria-label="Aksi">
@@ -90,7 +90,7 @@
                         <p><strong>Actors:</strong> {{ $movie->actors }}</p>
                         <p><strong>Sinopsis:</strong> {{ $movie->synopsis }}</p>
                         <p><strong>Cover Image:</strong></p>
-                        <img src="{{ $movie->cover_image }}" alt="{{ $movie->title }}" class="img-fluid" style="max-width: 100px;">
+                        <img src="{{ filter_var($movie->cover_image, FILTER_VALIDATE_URL) ? $movie->cover_image : asset('storage/' . $movie->cover_image) }}" alt="{{ $movie->title }}" class="img-fluid" style="max-width: 100px;">
                     </div>
 
                     <div class="modal-footer">

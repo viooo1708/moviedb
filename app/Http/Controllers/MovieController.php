@@ -12,6 +12,18 @@ class MovieController extends Controller
     /**
      * Display a listing of the resource.
      */
+    public function home()
+    {
+        $movies = Movie::latest()->paginate(6); // Sesuaikan jumlah film yang ingin ditampilkan per halaman
+        return view('home', compact('movies'));
+    }
+    // public function homepage()
+    // {
+    //     $movies = Movie::latest()->paginate(6);
+    //     return view('homepage', compact('movies'));
+    // }
+
+
     public function index(Request $request)
     {
         $query = Movie::query();
@@ -40,32 +52,34 @@ class MovieController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
-    {
-        $validated = $request->validate([
-            'title' => 'required|max:255|unique:movies',
-            'slug' => 'nullable|max:255|unique:movies',
-            'synopsis' => 'nullable|string',
-            'category_id' => 'required|exists:categories,id', // ← ini wajib!
-            'year' => 'required|integer',
-            'actors' => 'nullable|string',
-            'cover_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'cover_image_url' => 'nullable|url',
-        ]);
+{
+    $validated = $request->validate([
+        'title' => 'required|max:255|unique:movies',
+        'slug' => 'nullable|max:255|unique:movies',
+        'synopsis' => 'nullable|string',
+        'category_id' => 'required|exists:categories,id',
+        'year' => 'required|integer',
+        'actors' => 'nullable|string',
+        'cover_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        'cover_image_url' => 'nullable|url',
+    ]);
 
-
-        if ($request->hasFile('cover_image')) {
-            $validated['cover_image'] = $request->file('cover_image')->store('cover_images', 'public');
-        } elseif ($request->filled('cover_image_url')) {
-            $validated['cover_image'] = $request->input('cover_image_url');
-        }
-
-        // Jangan simpan key cover_image_url ke DB karena kolomnya cuma cover_image
-        unset($validated['cover_image_url']);
-        Movie::create($validated);
-
-        session()->flash('success', 'Film berhasil ditambahkan.');
-        return redirect()->route('movies.index');
+    // Simpan gambar jika diupload dari file
+    if ($request->hasFile('cover_image')) {
+        $validated['cover_image'] = $request->file('cover_image')->store('cover_images', 'public');
+    } elseif ($request->filled('cover_image_url')) {
+        $validated['cover_image'] = $request->input('cover_image_url');
     }
+
+    // Hapus cover_image_url dari validasi agar tidak error
+    unset($validated['cover_image_url']);
+
+    Movie::create($validated);
+
+    session()->flash('success', 'Film berhasil ditambahkan.');
+    return redirect()->route('movies.index');
+}
+
 
     /**
      * Display the specified resource.
