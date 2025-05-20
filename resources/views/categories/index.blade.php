@@ -2,6 +2,8 @@
 
 @section('title', 'Data Kategori')
 @section('navKategori', 'active')
+@section('searchAction', route('categories.index'))
+
 
 @section('content')
 <div class="container mt-4">

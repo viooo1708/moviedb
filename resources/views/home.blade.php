@@ -2,6 +2,8 @@
 
 @section('title', 'Daftar Film')
 @section('navMovies', 'active')
+@section('searchAction', route('home'))
+
 
 @section('content')
 <div class="container mt-4">
@@ -26,7 +28,7 @@
                                     <p class="card-text text-muted"><small>{{ $movie->category->category_name }} - {{ $movie->year }}</small></p>
                                     <p class="card-text">{{ \Illuminate\Support\Str::limit($movie->synopsis, 100, '...') }}</p>
                                     <a href="#" class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#detailModal{{ $movie->id }}">
-                                        Lihat Selengkapnya
+                                        View Details
                                     </a>
                                 </div>
                             </div>

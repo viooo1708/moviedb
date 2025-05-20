@@ -24,20 +24,23 @@ class MovieController extends Controller
     // }
 
 
-    public function index(Request $request)
-    {
-        $query = Movie::query();
+ public function index(Request $request)
+{
+    $query = Movie::with('category');
 
-        // Pencarian berdasarkan judul atau sinopsis film
-        if ($request->has('search') && $request->search != '') {
-            $search = $request->search;
-            $query->where('title', 'like', '%' . $search . '%')
-                  ->orWhere('synopsis', 'like', '%' . $search . '%');
-        }
-
-        $movies = $query->latest()->paginate(10);
-        return view('movies.index', ['movies' => $movies]);
+    // Pencarian berdasarkan judul atau sinopsis
+    if ($request->filled('search')) {
+        $search = $request->search;
+        $query->where(function($q) use ($search) {
+            $q->where('title', 'like', '%' . $search . '%')
+              ->orWhere('synopsis', 'like', '%' . $search . '%');
+        });
     }
+
+    $movies = $query->latest()->paginate(10)->withQueryString(); // withQueryString penting untuk pagination saat search
+    return view('movies.index', ['movies' => $movies]);
+}
+
 
     /**
      * Show the form for creating a new resource.

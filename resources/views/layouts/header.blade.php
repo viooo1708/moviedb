@@ -11,7 +11,7 @@
                 <ul class="navbar-nav me-auto mb-2 mb-md-0">
                     <!-- Home -->
                     <li class="nav-item">
-                         <a class="nav-link @yield('navHome')" href="/">Home</a>
+                         <a class="nav-link @yield('navHome')" href="{{ route('home') }}">Home</a>
                     </li>
                     <!-- Categories -->
                     <li class="nav-item">
@@ -22,10 +22,34 @@
                         <a class="nav-link @yield('navMovies')" href="{{ route('movies.index') }}">Movies</a>
                     </li>
                 </ul>
-                <form class="d-flex" role="search">
-                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+
+                @php
+                    use Illuminate\Support\Facades\Route;
+                    $currentRoute = Route::currentRouteName();
+
+                    switch ($currentRoute) {
+                        case 'home':
+                            $searchAction = route('home');
+                            break;
+                        case 'categories.index':
+                            $searchAction = route('categories.index');
+                            break;
+                        case 'movies.index':
+                        default:
+                            $searchAction = route('movies.index');
+                            break;
+                    }
+                @endphp
+
+                <form class="d-flex mb-3" role="search" method="GET" action="{{ $searchAction }}">
+                    <input class="form-control me-2"
+                           type="search"
+                           name="search"
+                           placeholder="Cari judul film..."
+                           value="{{ request('search') }}">
                     <button class="btn btn-outline-success" type="submit">Search</button>
                 </form>
+
             </div>
         </div>
     </nav>

@@ -17,3 +17,4 @@ Route::get('/', [MovieController::class, 'home'])->name('home');
 // Resource routes
 Route::resource('categories', CategoryController::class);
 Route::resource('movies', MovieController::class);
+

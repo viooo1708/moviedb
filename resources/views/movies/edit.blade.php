@@ -144,4 +144,21 @@
         </div>
     </div>
 </div>
+<script>
+    function convertToSlug(text) {
+        return text
+            .toLowerCase()
+            .trim()
+            .replace(/[^a-z0-9\s-]/g, '')
+            .replace(/\s+/g, '-')
+            .replace(/-+/g, '-');
+    }
+
+    const titleInput = document.getElementById('title');
+    const slugInput = document.getElementById('slug');
+
+    titleInput.addEventListener('input', function() {
+        slugInput.value = convertToSlug(this.value);
+    });
+</script>
 @endsection
