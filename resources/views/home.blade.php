@@ -7,7 +7,7 @@
 
 @section('content')
 <div class="container mt-4">
-    <h1 class="mb-4">Popular Movie</h1>
+    <h1 class="mb-4">Latest Movie</h1>
 
     {{-- Grid Card Film 2 kolom per baris, 2 baris total --}}
     @foreach ($movies->chunk(2) as $chunk)

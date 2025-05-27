@@ -160,5 +160,6 @@
     titleInput.addEventListener('input', function() {
         slugInput.value = convertToSlug(this.value);
     });
+    
 </script>
 @endsection
