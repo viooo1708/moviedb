@@ -167,4 +167,6 @@ class MovieController extends Controller
         session()->flash('success', 'Film berhasil dihapus.');
         return redirect()->route('movies.index');
     }
+
+    
 }
