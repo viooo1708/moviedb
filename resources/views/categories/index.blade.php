@@ -39,14 +39,17 @@
                         <td>{{ $category->description }}</td>
                         <td>
                             <div class="btn-group" role="group" aria-label="Aksi">
+                                @can('edit')
                                 {{-- Edit --}}
                                 <a href="{{ route('categories.edit', $category->id) }}" class="btn btn-sm btn-warning me-2" title="Edit Kategori">
                                     <i class="bi bi-pencil-square fs-5"></i>
                                 </a>
+                                @endcan
                                 {{-- Detail --}}
                                 <a href="#" class="btn btn-sm btn-info me-2" data-bs-toggle="modal" data-bs-target="#detailModal{{ $category->id }}" title="Lihat Detail">
                                     <i class="bi bi-eye fs-5"></i>
                                 </a>
+                                @can('delete')
                                 {{-- Hapus --}}
                                 <form action="{{ route('categories.destroy', $category->id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Yakin ingin menghapus kategori ini?')">
                                     @csrf
@@ -55,6 +58,7 @@
                                         <i class="bi bi-trash fs-5"></i>
                                     </button>
                                 </form>
+                                @endcan
                             </div>
                         </td>
                     </tr>

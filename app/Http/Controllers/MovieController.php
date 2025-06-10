@@ -6,6 +6,7 @@ use Storage;
 use App\Models\Movie;
 use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class MovieController extends Controller
 {
@@ -55,17 +56,17 @@ class MovieController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
-{
-    $validated = $request->validate([
-        'title' => 'required|max:255|unique:movies',
-        'slug' => 'nullable|max:255|unique:movies',
-        'synopsis' => 'nullable|string',
-        'category_id' => 'required|exists:categories,id',
-        'year' => 'required|integer',
-        'actors' => 'nullable|string',
-        'cover_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-        'cover_image_url' => 'nullable|url',
-    ]);
+    {
+        $validated = $request->validate([
+            'title' => 'required|max:255|unique:movies',
+            'slug' => 'nullable|max:255|unique:movies',
+            'synopsis' => 'nullable|string',
+            'category_id' => 'required|exists:categories,id',
+            'year' => 'required|integer',
+            'actors' => 'nullable|string',
+            'cover_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'cover_image_url' => 'nullable|url',
+        ]);
 
     // Simpan gambar jika diupload dari file
     if ($request->hasFile('cover_image')) {
@@ -156,9 +157,9 @@ class MovieController extends Controller
     public function destroy(string $id)
     {
         $movie = Movie::findOrFail($id);
-
-        // Hapus gambar terkait
-        if ($movie->cover_image) {
+        if (Gate::allows('delete')) {
+            echo "delete movie $id";
+             if ($movie->cover_image) {
             Storage::delete('public/' . $movie->cover_image);
         }
 
@@ -166,7 +167,11 @@ class MovieController extends Controller
 
         session()->flash('success', 'Film berhasil dihapus.');
         return redirect()->route('movies.index');
+        }
+        abort(403);
+        // Hapus gambar terkait
+
     }
 
-    
+
 }

@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Facades\Gate;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -21,6 +22,17 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Paginator::useBootstrap();
+
+        //Policy untuk akses admin ke laravel
+        Gate::define('delete', function($user){
+            return $user->role === 'admin';
+        });
+        Gate::define('edit', function($user){
+            return $user->role === 'admin';
+        });
+        Gate::define('create', function($user){
+            return $user->role === 'admin';
+        });
     }
 
 }

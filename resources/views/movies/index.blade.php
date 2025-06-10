@@ -16,10 +16,10 @@
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     @endif
-
+@can('create')
     {{-- Tombol Tambah --}}
     <a href="{{ route('movies.create') }}" class="btn btn-primary mb-3">Input Film</a>
-
+@endcan
     {{-- Tabel Film --}}
     <div class="table-responsive">
         <table class="table table-bordered table-hover align-middle text-center">
@@ -50,13 +50,14 @@
                         </td>
                         <td>
                             <div class="btn-group">
+@can('edit')
                                 {{-- Edit --}}
                                 <a href="{{ route('movies.edit', $movie->id) }}"
                                    class="btn btn-sm btn-warning"
                                    title="Edit Film">
                                     <i class="bi bi-pencil-square fs-5"></i>
                                 </a>
-
+@endcan
                                 {{-- Detail --}}
                                 <button type="button"
                                         class="btn btn-sm btn-info"
@@ -65,7 +66,7 @@
                                         title="Lihat Detail">
                                     <i class="bi bi-eye fs-5"></i>
                                 </button>
-
+@can('delete')
                                 {{-- Hapus --}}
                                 <form action="{{ route('movies.destroy', $movie->id) }}"
                                       method="POST"
@@ -79,6 +80,7 @@
                                         <i class="bi bi-trash fs-5"></i>
                                     </button>
                                 </form>
+@endcan
                             </div>
                         </td>
                     </tr>
