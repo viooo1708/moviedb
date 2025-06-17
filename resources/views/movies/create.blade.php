@@ -23,7 +23,7 @@
                 </div>
 
                 <!-- Slug -->
-                <div class="mb-3 row">
+                <!-- <div class="mb-3 row">
                     <label for="slug" class="col-sm-2 col-form-label">Slug</label>
                     <div class="col-sm-10">
                         <input type="text" name="slug" class="form-control @error('slug') is-invalid @enderror" id="slug" value="{{ old('slug') }}">
@@ -31,7 +31,7 @@
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
-                </div>
+                </div> -->
 
                 <!-- Tahun Rilis -->
                 <div class="mb-3 row">
